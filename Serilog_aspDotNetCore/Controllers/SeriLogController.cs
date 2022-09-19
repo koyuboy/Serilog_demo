@@ -9,12 +9,6 @@ namespace Serilog_aspDotNetCore.Controllers
     [ApiController]
     public class SeriLogController : ControllerBase
     {
-        private readonly ILogger<SeriLogController> _logger;
-        public SeriLogController(ILogger<SeriLogController> logger)
-        {
-            _logger = logger;
-
-        }
 
         [HttpGet]
         public ActionResult Get([FromQuery] int x, int y)
