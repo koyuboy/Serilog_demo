@@ -12,13 +12,13 @@ var builder = WebApplication.CreateBuilder(args);
 //        .Enrich.WithProperty("Environment", ctx.HostingEnvironment);
 //});
 
-var logger = new LoggerConfiguration()
+Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .Enrich.FromLogContext()
     .CreateLogger();
 
 
-builder.Host.UseSerilog(logger);
+builder.Host.UseSerilog();
 
 
 builder.Services.AddControllers();

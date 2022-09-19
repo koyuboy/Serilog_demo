@@ -21,14 +21,14 @@ namespace Serilog_aspDotNetCore.Controllers
         {
             try
             {
-                _logger.LogInformation("Operation starts.");
+                Log.Information("Operation starts.");
                 var result = x / y;
             }
             catch (Exception ex)
             {
                 using (LogContext.PushProperty("UserName", "huzeyfe-error"))
                 {
-                    _logger.LogError("test- Error occured!, {error}", ex);
+                    Log.Error("test- Error occured!, {error}", ex);
                 }
 
             }
