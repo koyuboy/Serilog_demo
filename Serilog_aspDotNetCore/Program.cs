@@ -4,13 +4,22 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Host.UseSerilog((ctx, loggerConfiguration) => //configure serilog
-{
-    var loger = loggerConfiguration
-        .ReadFrom.Configuration(ctx.Configuration)
-        .Enrich.WithProperty("ApplicationName", typeof(Program).Assembly.GetName().Name)
-        .Enrich.WithProperty("Environment", ctx.HostingEnvironment);
-});
+//builder.Host.UseSerilog((ctx, loggerConfiguration) => //configure serilog
+//{
+//    var loger = loggerConfiguration
+//        .ReadFrom.Configuration(ctx.Configuration)
+//        .Enrich.WithProperty("ApplicationName", typeof(Program).Assembly.GetName().Name)
+//        .Enrich.WithProperty("Environment", ctx.HostingEnvironment);
+//});
+
+var logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .CreateLogger();
+
+
+builder.Host.UseSerilog(logger);
+
 
 builder.Services.AddControllers();
 builder.Services.AddLogging(); //Add logging
@@ -27,10 +36,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseSerilogRequestLogging();// This will make the HTTP requests log as rich logs instead of plain text.
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseSerilogRequestLogging();// This will make the HTTP requests log as rich logs instead of plain text.
 
 app.Run();
