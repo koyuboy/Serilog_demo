@@ -1,4 +1,5 @@
 using Serilog;
+using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,8 +13,15 @@ var builder = WebApplication.CreateBuilder(args);
 //        .Enrich.WithProperty("Environment", ctx.HostingEnvironment);
 //});
 
+var configuration = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    //.AddJsonFile("appsettings.json")
+    .AddJsonFile($"Serilog.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", true)
+    .Build();
+
 Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)
+    //.MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+    .ReadFrom.Configuration(configuration)
     .Enrich.FromLogContext()
     .CreateLogger();
 
@@ -36,11 +44,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+//app.UseSerilogRequestLogging();// This will make the HTTP requests log as rich logs instead of plain text.
+//app.UseSerilogRequestLogging(options =>
+//{
+//    // Customize the message template
+//    options.MessageTemplate = "Handled {RequestPath}";
+//});
 
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseSerilogRequestLogging();// This will make the HTTP requests log as rich logs instead of plain text.
 
 app.Run();

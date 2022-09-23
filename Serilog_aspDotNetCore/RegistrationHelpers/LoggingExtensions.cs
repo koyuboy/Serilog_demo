@@ -12,18 +12,18 @@ namespace Serilog_aspDotNetCore.RegistrationHelpers
             if (enrich == null)
                 throw new ArgumentNullException(nameof(enrich));
 
-            return enrich.With<AddDateTimeNowEnricher>();
+            return enrich.With<AddDateTimeNowEnricher>().Enrich.With<UserNameEnricher>();
 
         }
 
-        public static LoggerConfiguration WithUserName(
-            this LoggerEnrichmentConfiguration enrich)
-        {
-            if (enrich == null)
-                throw new ArgumentNullException(nameof(enrich));
+        //public static LoggerConfiguration WithUserName(
+        //    this LoggerEnrichmentConfiguration enrich)
+        //{
+        //    if (enrich == null)
+        //        throw new ArgumentNullException(nameof(enrich));
 
-            return enrich.With<UserNameEnricher>();
+        //    return enrich.With<UserNameEnricher>();
 
-        }
+        //}
     }
 }
