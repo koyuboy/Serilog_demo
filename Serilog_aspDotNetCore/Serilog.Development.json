@@ -1,52 +1,19 @@
 {
     "Serilog": {
-        "Using": [ "Serilog.Sinks.Console", "Serilog.Sinks.File", "Serilog.Sinks.Seq", "Serilog.Sinks.Graylog" ],
-        "MinimumLevel": "Information",
-        "WriteTo": [
-            { "Name": "Console" },
-            {
-                "Name": "File",
-                "Args": {
-                    "path": "Logs/log.txt"
-                }
-
-            },
-            {
-                "Name": "Seq",
-                "Args": {
-                    "serverUrl": "http://localhost:5341"
-
-
-                }
+        "Using": [ "Serilog.Sinks.Console" ],
+        "MinimumLevel": {
+            "Default": "Information",
+            "Override": {
+                "Microsoft": "Error",
+                "System": "Error"
             }
+        },
+        "WriteTo": [
+            { "Name": "Console" }
         ],
         "Enrich": [
-            "FromLogContext",
-            "WithEnvironmentName",
-            "WithEnvironmentUserName",
-            "WithMachineName",
-            "WithThreadId",
-            "WithThreadName",
-            "WithProcessId",
-            "WithProcessName"
-            //custom
-            //"WithAddDateTimeNow"
-            //"WithUserName"
+            "FromLogContext"
         ],
-        //"Destructure": [
-        //  {
-        //    "Name": "ToMaximumDepth",
-        //    "Args": { "maximumDestructuringDepth": 4 }
-        //  },
-        //  {
-        //    "Name": "ToMaximumStringLength",
-        //    "Args": { "maximumStringLength": 100 }
-        //  },
-        //  {
-        //    "Name": "ToMaximumCollectionCount",
-        //    "Args": { "maximumCollectionCount": 10 }
-        //  }
-        //],
         "Properties": {
             "Application": "Serilog Asp.NetCore Demo"
         }

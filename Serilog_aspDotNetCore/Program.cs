@@ -1,36 +1,31 @@
 using Serilog;
-using Serilog.Events;
+using System.Xml.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
-//builder.Host.UseSerilog((ctx, loggerConfiguration) => //configure serilog
-//{
-//    var loger = loggerConfiguration
-//        .ReadFrom.Configuration(ctx.Configuration)
-//        .Enrich.WithProperty("ApplicationName", typeof(Program).Assembly.GetName().Name)
-//        .Enrich.WithProperty("Environment", ctx.HostingEnvironment);
-//});
+//!Serilog Configuration
+var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
 var configuration = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
-    //.AddJsonFile("appsettings.json")
-    .AddJsonFile($"Serilog.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", true)
+    .AddJsonFile($"Serilog.json", false)
+    .AddJsonFile($"Serilog.{env}.json", true)
     .Build();
 
 Log.Logger = new LoggerConfiguration()
-    //.MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
     .ReadFrom.Configuration(configuration)
-    .Enrich.FromLogContext()
+    .Enrich.WithProperty("NewProperty", "test")
     .CreateLogger();
-
 
 builder.Host.UseSerilog();
 
+var user = new { Name = "Serilog", Environment = env, Temp="test" };
+Log.Warning("Hello {@user}", user);
+
 
 builder.Services.AddControllers();
-builder.Services.AddLogging(); //Add logging
+builder.Services.AddLogging(); //!Add logging
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -43,13 +38,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-//app.UseSerilogRequestLogging();// This will make the HTTP requests log as rich logs instead of plain text.
-//app.UseSerilogRequestLogging(options =>
-//{
-//    // Customize the message template
-//    options.MessageTemplate = "Handled {RequestPath}";
-//});
 
 app.UseAuthorization();
 

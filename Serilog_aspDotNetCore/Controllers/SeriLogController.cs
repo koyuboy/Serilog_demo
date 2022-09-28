@@ -22,23 +22,18 @@ namespace Serilog_aspDotNetCore.Controllers
         {
             try
             {
-                _logger.LogInformation("Operation starts.");
+                _logger.LogInformation("INFO - Operation starts with {x}/{y}.", x, y);
+                _logger.LogWarning("WARNING - Operation starts with {x}/{y}.", x, y);
+
                 var result = x / y;
             }
             catch (Exception ex)
             {
-                var a = new { x = "fisrt", y = 2 };
-                _logger.LogWarning("test {a}", a);
-                using (LogContext.PushProperty("UserName", "huzeyfe-error"))
-                {
-                    _logger.LogError("test- Error occured!, {error}", ex);
-                }
+                LogContext.PushProperty("ExceptionMessage", ex.Message);
+                _logger.LogError("ERROR - An error occured!, {error}", ex);
 
+                return BadRequest();
             }
-            //finally
-            //{
-            //    Log.CloseAndFlush();
-            //}
 
             return Ok();
         }
